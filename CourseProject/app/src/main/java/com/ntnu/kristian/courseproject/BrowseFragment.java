@@ -34,7 +34,7 @@ public class BrowseFragment extends Fragment {
 
     // TODO: Rename and change types of parameters
     private AndroidFlavorAdapter mMovieAdapter;
-    public ProgressBar progressBar;
+    //public ProgressBar progressBar;
 
     private OnFragmentInteractionListener mListener;
 
@@ -50,7 +50,7 @@ public class BrowseFragment extends Fragment {
         // Makes progressbar start spinning before it downloads data
         //progressBar.setVisibility(View.VISIBLE);
         //
-
+        Log.d(LOG_TAG, "updatePosters");
         FetchPosterTask posterTask = new FetchPosterTask();
         posterTask.execute();
     }
@@ -59,21 +59,23 @@ public class BrowseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_browse, container, false);
+        Log.d(LOG_TAG, "onCreateView");
         // initializes progressBar from ID in fragment_main.xml file
-        /*
-        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+
+        //progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
         // AndroidFlavorAdapter is a custom adapter used for the movieposters
-        //mMovieAdapter = new AndroidFlavorAdapter(getActivity(), new ArrayList<AndroidFlavor>());
+        mMovieAdapter = new AndroidFlavorAdapter(getActivity(), new ArrayList<AndroidFlavor>());
         // Initializes the gridview with posters
         GridView gridView = (GridView) rootView.findViewById(R.id.gridview);
         // Sets gridview adapter as mMovieAdapter
-        //gridView.setAdapter(mMovieAdapter);
+        gridView.setAdapter(mMovieAdapter);
 
         // For detailActivity
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(LOG_TAG, "onItemClick, " + position);
                 //AndroidFlavor poster = mMovieAdapter.getItem(position);
                 //Intent i = new Intent(getActivity(), BrowseDetailActivity.class);
                 // Inserts the entire poster object into intent, so we can use all its variables in detail
@@ -81,7 +83,7 @@ public class BrowseFragment extends Fragment {
                 //i.putExtra("movieTag", poster);
                 //startActivity(i);
             }
-        });*/
+        });
         return rootView;
     }
 

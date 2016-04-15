@@ -79,11 +79,9 @@ public class MainActivity extends AppCompatActivity
             // Handle the Search action
         } else if (id == R.id.nav_wishlist) {
             // Handle Wishlist fragment
-            Log.d(LOG_TAG, "wishlistbutto222n");
             ft.replace(R.id.nav_framelayout, new WishlistFragment()).commit();
         } else if (id == R.id.nav_browse) {
             // Start browse fragment
-            Log.d(LOG_TAG, "browsebutton");
             ft.replace(R.id.nav_framelayout, new BrowseFragment()).commit();
         } else if (id == R.id.nav_settings) {
             // Open settings fragment
