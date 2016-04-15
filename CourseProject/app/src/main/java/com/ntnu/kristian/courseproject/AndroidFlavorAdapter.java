@@ -63,10 +63,14 @@ public class AndroidFlavorAdapter extends ArrayAdapter<AndroidFlavor> {
         // Some phones might be ok with lower resolutions for quicker load times
         String baseUrl = "http://image.tmdb.org/t/p/w342";
         // Uses picasso library to load image from url into the imageview
-        Picasso.with(getContext()).load(baseUrl + androidFlavor.versionNumber).into(iconView);
+        try {
+            Picasso.with(getContext()).load(baseUrl + androidFlavor.versionNumber).into(iconView);
 
-        TextView versionNameView = (TextView) convertView.findViewById(R.id.flavor_text);
-        versionNameView.setText(androidFlavor.versionName);
+            TextView versionNameView = (TextView) convertView.findViewById(R.id.flavor_text);
+            versionNameView.setText(androidFlavor.versionName);
+        } catch (NullPointerException e){
+        }
+
 
         return convertView;
     }

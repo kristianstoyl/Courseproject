@@ -1,22 +1,15 @@
 package com.ntnu.kristian.courseproject;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ListView;
-import android.widget.ScrollView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,8 +19,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -38,12 +29,12 @@ public class tmdbSearchFragment extends Fragment {
     private AndroidFlavorAdapter mMovieAdapter;
     private GridView gridView;
     private EditText editText;
-    private Button button;
-    private ScrollView scrollView;
+    private Button sendButton;
+    private Button nextPageButton;
 
     int page = 1;
-    String query;
     Boolean newPage = false;
+    String query;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,15 +46,29 @@ public class tmdbSearchFragment extends Fragment {
         gridView.setAdapter(mMovieAdapter);
 
         editText = (EditText) rootView.findViewById(R.id.edit_message);
-        button = (Button) rootView.findViewById(R.id.send_button);
-        scrollView = (ScrollView) rootView.findViewById(R.id.scrollView);
+        sendButton = (Button) rootView.findViewById(R.id.send_button);
+        nextPageButton= (Button) rootView.findViewById(R.id.nextpage_button);
 
-
-        button.setOnClickListener(new View.OnClickListener() {
+        sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(LOG_TAG, " button pressed " + editText.getText().toString());
                 if(editText.getText().toString() != ""){
+                    // Resets page number
+                    newPage = false;
+                    page = 1;
+
+                    query = editText.getText().toString();
+                    TMDBQueryManager tmQuery = new TMDBQueryManager();
+                    tmQuery.execute();
+                }
+            }
+        });
+        nextPageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(editText.getText().toString() != ""){
+                    newPage = true;
+                    page++;
                     query = editText.getText().toString();
                     TMDBQueryManager tmQuery = new TMDBQueryManager();
                     tmQuery.execute();
@@ -100,7 +105,7 @@ public class tmdbSearchFragment extends Fragment {
             if(result != null){
                 // clears adapter, just to make sure there is no unnecessary objects in it
                 if(!newPage)
-                mMovieAdapter.clear();
+                    mMovieAdapter.clear();
                 for(AndroidFlavor movieList : result){
                     mMovieAdapter.add(movieList);
                 }

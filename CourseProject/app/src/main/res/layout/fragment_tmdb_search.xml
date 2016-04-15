@@ -28,29 +28,38 @@
 
     </LinearLayout>
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/scrollView"
-        android:fillViewport="true">
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-            <GridView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/search_gridview"
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:columnWidth="90sp"
-                android:horizontalSpacing="9sp"
-                android:verticalSpacing="9sp"
-                android:numColumns="auto_fit"
-                android:stretchMode="columnWidth"
-                android:gravity="center"
-                android:background="#000000" />
-        </LinearLayout>
-    </ScrollView>
+    <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/search_gridview"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="90sp"
+        android:horizontalSpacing="9sp"
+        android:verticalSpacing="9sp"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth"
+        android:gravity="center"
+        android:background="#000000"
+        android:layout_above="@+id/nextpage_button" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="More"
+            android:id="@+id/nextpage_button"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:background="#000000"
+            android:textColor="#ffffff" />
+
+    </RelativeLayout>
 
 
 </LinearLayout>

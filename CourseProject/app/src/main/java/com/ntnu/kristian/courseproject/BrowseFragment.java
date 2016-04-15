@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -34,6 +35,10 @@ public class BrowseFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private AndroidFlavorAdapter mMovieAdapter;
     public ProgressBar progressBar;
+    private Button nextPageButton;
+
+    int page = 1;
+    Boolean newPage = false;
 
     public BrowseFragment() {
     }
@@ -61,6 +66,7 @@ public class BrowseFragment extends Fragment {
         // initializes progressBar from ID in fragment_main.xml file
 
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        nextPageButton= (Button) rootView.findViewById(R.id.nextpage_button);
 
         // AndroidFlavorAdapter is a custom adapter used for the movieposters
         mMovieAdapter = new AndroidFlavorAdapter(getActivity(), new ArrayList<AndroidFlavor>());
@@ -82,6 +88,15 @@ public class BrowseFragment extends Fragment {
                 //startActivity(i);
             }
         });
+
+        nextPageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    newPage = true;
+                    page++;
+                    updatePosters();
+            }
+        });
         return rootView;
     }
 
@@ -95,11 +110,16 @@ public class BrowseFragment extends Fragment {
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
-            String appId = "5aa5bc75c39f6d200fa6bd741896baaa";
+            String API_KEY = "5aa5bc75c39f6d200fa6bd741896baaa";
             String posterJsonStr = null;
 
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc");
+            stringBuilder.append("&api_key=" + API_KEY);
+            stringBuilder.append("&page=" + page);
+
             try {
-                URL url = new URL("http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=5aa5bc75c39f6d200fa6bd741896baaa");
+                URL url = new URL(stringBuilder.toString());
 
                 // Create the request to theMovieDataBase, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -192,8 +212,9 @@ public class BrowseFragment extends Fragment {
         @Override
         protected void onPostExecute(AndroidFlavor[] result){
             if(result != null){
-                // clears adapter, just to make sure there is no unnecessary objects in it
-                mMovieAdapter.clear();
+                // Only clears if you are not looking for a new page
+                if(!newPage)
+                    mMovieAdapter.clear();
                 for(AndroidFlavor movieList : result){
                     mMovieAdapter.add(movieList);
                 }
