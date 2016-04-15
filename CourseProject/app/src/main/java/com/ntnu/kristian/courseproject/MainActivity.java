@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -77,6 +78,14 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment;
         if (id == R.id.nav_search) {
             // Handle the Search action
+            fragment = new tmdbSearchFragment();
+            //EditText editText = (EditText) findViewById(R.id.inputSearch);
+            //String query = editText.getText().toString();
+            //Bundle args = new Bundle();
+            //args.putString("query", "Searchquery");
+            //fragment.setArguments(args);
+
+            ft.replace(R.id.nav_framelayout, fragment).commit();
         } else if (id == R.id.nav_wishlist) {
             // Handle Wishlist fragment
             ft.replace(R.id.nav_framelayout, new WishlistFragment()).commit();

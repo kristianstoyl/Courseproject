@@ -27,8 +27,6 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class BrowseFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private final String LOG_TAG = BrowseFragment.class.getSimpleName();
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -36,8 +34,6 @@ public class BrowseFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private AndroidFlavorAdapter mMovieAdapter;
     public ProgressBar progressBar;
-
-    private OnFragmentInteractionListener mListener;
 
     public BrowseFragment() {
     }
@@ -89,10 +85,6 @@ public class BrowseFragment extends Fragment {
         return rootView;
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
     public class FetchPosterTask extends AsyncTask<String, Void, AndroidFlavor[]> {
         private final String LOG_TAG = FetchPosterTask.class.getSimpleName();
 
