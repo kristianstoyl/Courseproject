@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,7 +35,7 @@ public class BrowseFragment extends Fragment {
 
     // TODO: Rename and change types of parameters
     private AndroidFlavorAdapter mMovieAdapter;
-    //public ProgressBar progressBar;
+    public ProgressBar progressBar;
 
     private OnFragmentInteractionListener mListener;
 
@@ -48,7 +49,7 @@ public class BrowseFragment extends Fragment {
     }
     public void updatePosters(){
         // Makes progressbar start spinning before it downloads data
-        //progressBar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         //
         Log.d(LOG_TAG, "updatePosters");
         FetchPosterTask posterTask = new FetchPosterTask();
@@ -60,9 +61,10 @@ public class BrowseFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_browse, container, false);
         Log.d(LOG_TAG, "onCreateView");
+
         // initializes progressBar from ID in fragment_main.xml file
 
-        //progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
         // AndroidFlavorAdapter is a custom adapter used for the movieposters
         mMovieAdapter = new AndroidFlavorAdapter(getActivity(), new ArrayList<AndroidFlavor>());
@@ -199,13 +201,13 @@ public class BrowseFragment extends Fragment {
         protected void onPostExecute(AndroidFlavor[] result){
             if(result != null){
                 // clears adapter, just to make sure there is no unnecessary objects in it
-                //mMovieAdapter.clear();
+                mMovieAdapter.clear();
                 for(AndroidFlavor movieList : result){
-                    //mMovieAdapter.add(movieList);
+                    mMovieAdapter.add(movieList);
                 }
 
                 // Removes progressbar, because the data is finished downloading
-                //progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
             }
         }
     }

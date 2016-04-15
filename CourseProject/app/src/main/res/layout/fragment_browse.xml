@@ -6,15 +6,6 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Browse"
-        android:textSize="60sp"
-        android:id="@+id/textView3"
-        android:layout_gravity="center" />
-
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gridview"
         android:layout_width="match_parent"
@@ -30,6 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="?android:attr/progressBarStyleLarge"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center"
         />
+
 </FrameLayout>
