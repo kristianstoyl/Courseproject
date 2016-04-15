@@ -58,6 +58,7 @@ public class AndroidFlavorAdapter extends ArrayAdapter<AndroidFlavor> {
         }
         // selects the (now empty) imageview for poster
         ImageView iconView = (ImageView) convertView.findViewById(R.id.flavor_image);
+
         // w342 is for size of image, I found 342 worked well for my Galaxy S5, not tested on other phones
         // Some phones might be ok with lower resolutions for quicker load times
         String baseUrl = "http://image.tmdb.org/t/p/w342";
