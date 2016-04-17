@@ -61,8 +61,8 @@ public class BrowseFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_browse, container, false);
         Log.d(LOG_TAG, "onCreateView");
 
+        getActivity().setTitle("Browse");
         // initializes progressBar from ID in fragment_main.xml file
-
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         nextPageButton= (Button) rootView.findViewById(R.id.nextpage_button);
 

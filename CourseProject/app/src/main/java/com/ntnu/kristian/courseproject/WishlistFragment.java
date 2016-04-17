@@ -20,6 +20,7 @@ public class WishlistFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_wishlist, container, false);
+        getActivity().setTitle("Wishlist");
         Log.d(LOG_TAG, "wishList - onCreateView");
         return rootView;
     }

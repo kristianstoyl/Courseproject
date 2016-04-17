@@ -4,15 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -40,6 +43,7 @@ public class DetailActivityFragment extends Fragment {
     private AndroidFlavor poster;
     private TextView tv_overView;
     private TextView tv_release;
+    private TextView tv_title;
 
     private YouTubePlayer YPlayer;
 
@@ -51,6 +55,7 @@ public class DetailActivityFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         tv_overView = (TextView) rootView.findViewById(R.id.detail_overViewTV);
         tv_release = (TextView) rootView.findViewById(R.id.detail_release);
+        tv_title = (TextView) rootView.findViewById(R.id.detail_titleTV);
         Intent intent = getActivity().getIntent();
         if (intent != null){
             // receives the poster object from intent
@@ -62,6 +67,7 @@ public class DetailActivityFragment extends Fragment {
             String baseUrl = "http://image.tmdb.org/t/p/w342";
             // Uses picasso library to load image from url to imageview
 
+            tv_title.setText(poster.versionName);
             tv_overView.setText(poster.overView);
             tv_release.setText(poster.releaseDate);
 
@@ -70,6 +76,12 @@ public class DetailActivityFragment extends Fragment {
             GetTrailer();
         }
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setSubtitle(poster.versionName);
     }
 
     public void LoadVideo(String link){
@@ -102,7 +114,6 @@ public class DetailActivityFragment extends Fragment {
     public void GetTrailer(){
         TrailerReceive trailer = new TrailerReceive();
         trailer.execute();
-
     }
 
     @Override

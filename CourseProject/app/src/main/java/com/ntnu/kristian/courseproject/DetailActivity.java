@@ -12,16 +12,24 @@ import android.view.View;
 
 public class DetailActivity extends AppCompatActivity {
     private final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR); // Locks screen to portrait
         setContentView(R.layout.activity_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Browse");
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+    }
+
+    @Override
+    public void setTitle(CharSequence title){
+        CharSequence mTitle = title;
+        getSupportActionBar().setTitle(mTitle);
     }
 }

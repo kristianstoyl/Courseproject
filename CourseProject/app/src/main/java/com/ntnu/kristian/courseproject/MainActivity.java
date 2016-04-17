@@ -1,5 +1,6 @@
 package com.ntnu.kristian.courseproject;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR); // Locks screen to portrait
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -75,14 +77,7 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction ft = fragmentManager.beginTransaction();
         Fragment fragment;
         if (id == R.id.nav_search) {
-            // Handle the Search action
             fragment = new SearchFragment();
-            //EditText editText = (EditText) findViewById(R.id.inputSearch);
-            //String query = editText.getText().toString();
-            //Bundle args = new Bundle();
-            //args.putString("query", "Searchquery");
-            //fragment.setArguments(args);
-
             ft.replace(R.id.nav_framelayout, fragment).commit();
         } else if (id == R.id.nav_wishlist) {
             // Handle Wishlist fragment
@@ -104,6 +99,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void setTitle(CharSequence title){
         CharSequence mTitle = title;
-        getActionBar().setTitle(mTitle);
+        getSupportActionBar().setTitle(mTitle);
     }
 }
