@@ -31,4 +31,12 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/detail_posterIV"/>
 
+    <FrameLayout
+        android:id="@+id/youtube_fragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/detail_overViewTV"
+        android:visibility="visible" />
+
 </RelativeLayout>

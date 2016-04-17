@@ -1,9 +1,12 @@
 package com.ntnu.kristian.courseproject;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +14,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayer.OnInitializedListener;
+import com.google.android.youtube.player.YouTubePlayer.Provider;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -24,10 +32,18 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+//
+//YOUTUBE API KEY: AIzaSyCzuvfmoET-A0tHJwE-f8nTYWdBFtWVHgA
+//
 public class DetailActivityFragment extends Fragment {
+    private final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
     private AndroidFlavor poster;
     private TextView tv_overView;
     private TextView tv_release;
+
+    private YouTubePlayer YPlayer;
+
+    final public String YOUTUBE_API_KEY = "AIzaSyCzuvfmoET-A0tHJwE-f8nTYWdBFtWVHgA";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,26 +66,71 @@ public class DetailActivityFragment extends Fragment {
             tv_release.setText(poster.releaseDate);
 
             Picasso.with(getContext()).load(baseUrl + poster.posterNumber).into(imgView);
+
+            GetTrailer();
         }
         return rootView;
     }
 
-    public class FetchPosterTask extends AsyncTask<String, Void, String> {
-        private final String LOG_TAG = FetchPosterTask.class.getSimpleName();
+    public void LoadVideo(String link){
+        YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
+        final String youtubeLink = link;
+        youTubePlayerFragment.initialize(YOUTUBE_API_KEY, new OnInitializedListener() {
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
+
+                if (!wasRestored) {
+                    YPlayer = player;
+                    //YPlayer.setFullscreen(true);
+                    YPlayer.setShowFullscreenButton(false);
+                    YPlayer.loadVideo(youtubeLink);
+                    YPlayer.pause();
+
+                    //YPlayer.play();
+                }
+            }
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider arg0, YouTubeInitializationResult arg1) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.add(R.id.youtube_fragment, youTubePlayerFragment).commit();
+    }
+
+    public void GetTrailer(){
+        TrailerReceive trailer = new TrailerReceive();
+        trailer.execute();
+
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser) {
+            Activity a = getActivity();
+            if(a != null) a.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+    }
+
+    public class TrailerReceive extends AsyncTask<String, Void, String> {
+        private final String LOG_TAG = TrailerReceive.class.getSimpleName();
 
         @Override
         protected String doInBackground(String... params){
             // JsonList
             // http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=5aa5bc75c39f6d200fa6bd741896baaa
 
+            Log.d(LOG_TAG, "doInBackground");
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             String API_KEY = "5aa5bc75c39f6d200fa6bd741896baaa";
             String posterJsonStr = null;
 
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("http://api.themoviedb.org/3/movie/550/videos");
-            stringBuilder.append("&api_key=" + API_KEY);
+            stringBuilder.append("http://api.themoviedb.org/3/movie/" + poster.id + "/videos");
+            stringBuilder.append("?api_key=" + API_KEY);
 
             try {
                 URL url = new URL(stringBuilder.toString());
@@ -132,19 +193,26 @@ public class DetailActivityFragment extends Fragment {
                 throws JSONException {
             //
             // Used a jsonformatter to look at how the json is arranged, to know what arrays and objects I need
+
+            Log.d(LOG_TAG, "getPosterData ");
             final String OWM_RESULTS = "results";
             final String OWM_KEY = "key";
 
             JSONObject posterJson = new JSONObject(json);
             JSONArray posterArray = posterJson.getJSONArray(OWM_RESULTS);
-
-            return posterArray.getJSONObject(0).getString(OWM_KEY);
+            if(posterArray.length() != 0)
+                return posterArray.getJSONObject(0).getString(OWM_KEY);
+            return "";
         }
 
         @Override
         protected void onPostExecute(String result){
             if(result != null){
+                Log.d(LOG_TAG, "onPostExecute");
                 // result = youtube id for trailer, e.g: youtube.com/watch?v=<result>
+
+                if(result != "")
+                    LoadVideo(result);
             }
         }
     }
