@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -78,7 +76,7 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment;
         if (id == R.id.nav_search) {
             // Handle the Search action
-            fragment = new tmdbSearchFragment();
+            fragment = new SearchFragment();
             //EditText editText = (EditText) findViewById(R.id.inputSearch);
             //String query = editText.getText().toString();
             //Bundle args = new Bundle();

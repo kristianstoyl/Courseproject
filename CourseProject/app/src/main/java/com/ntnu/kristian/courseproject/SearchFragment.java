@@ -1,5 +1,6 @@
 package com.ntnu.kristian.courseproject;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -23,7 +25,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class tmdbSearchFragment extends Fragment {
+public class SearchFragment extends Fragment {
     private final String LOG_TAG = BrowseFragment.class.getSimpleName();
     private View rootView;
     private AndroidFlavorAdapter mMovieAdapter;
@@ -75,21 +77,25 @@ public class tmdbSearchFragment extends Fragment {
                 }
             }
         });
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(LOG_TAG, "onItemClick, " + position);
+                AndroidFlavor poster = mMovieAdapter.getItem(position);
+                Intent i = new Intent(getActivity(), DetailActivity.class);
+                // Inserts the entire poster object into intent, so we can use all its variables in detail
+                // -activity, it is not used now, but right now only movieposter is used in detailactivity
+                i.putExtra("movieTag", poster);
+                startActivity(i);
+            }
+        });
         return rootView;
-    }
-
-
-    public void updateViewWithResults(AndroidFlavor[] result) {
-        Log.d("updateViewWithResults", result.toString());
-        // Add results to listView.
-
-        // Update Activity to show listView
     }
 
     private class TMDBQueryManager extends AsyncTask<String, Void, AndroidFlavor[]> {
 
         private final String TMDB_API_KEY = "5aa5bc75c39f6d200fa6bd741896baaa";
-        private static final String DEBUG_TAG = "TMDBQueryManager";
 
         @Override
         protected AndroidFlavor[] doInBackground(String... params) {
@@ -140,7 +146,6 @@ public class tmdbSearchFragment extends Fragment {
                 conn.connect();
 
                 int responseCode = conn.getResponseCode();
-                Log.d(DEBUG_TAG, "The response code is: " + responseCode + " " + conn.getResponseMessage());
 
                 stream = conn.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
@@ -188,8 +193,11 @@ public class tmdbSearchFragment extends Fragment {
             // Used a jsonformatter to look at how the json is arranged, to know what arrays and objects I need
             final String OWM_RESULTS = "results";
             final String OWM_TITLE = "title";
-            final String OWM_NUMBER = "poster_path";
+            final String OWM_POSTER = "poster_path";
             final String OWM_IMAGE = "id";
+            final String OWM_OVERVIEW = "overview";
+            final String OWM_RELEASE = "release_date";
+            final String OWM_ID = "id";
 
             JSONObject posterJson = new JSONObject(json);
             JSONArray posterArray = posterJson.getJSONArray(OWM_RESULTS);
@@ -200,19 +208,25 @@ public class tmdbSearchFragment extends Fragment {
 
             for(int i = 0; i < posterArray.length(); i++){
                 String name;
-                String number;
+                String poster;
                 int image;
+                String release;
+                String overview;
+                int id;
 
                 JSONObject movie = posterArray.getJSONObject(i);
 
                 // Title of movie
                 name = movie.getString(OWM_TITLE);
                 // Number is the posternumber of the url. Every poster has the same baseurl, but different number
-                number = movie.getString(OWM_NUMBER);
+                poster = movie.getString(OWM_POSTER);
                 // ID of movie, never really used anywhere
                 image = movie.getInt(OWM_IMAGE);
+                id = movie.getInt(OWM_ID);
                 // adds movies to the list of posters.
-                posterList[i] = new AndroidFlavor(name, number, image);
+                release = movie.getString(OWM_RELEASE);
+                overview = movie.getString(OWM_OVERVIEW);
+                posterList[i] = new AndroidFlavor(id, name, poster, image, release, overview);
             }
             return posterList;
         }

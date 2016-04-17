@@ -64,7 +64,7 @@ public class AndroidFlavorAdapter extends ArrayAdapter<AndroidFlavor> {
         String baseUrl = "http://image.tmdb.org/t/p/w342";
         // Uses picasso library to load image from url into the imageview
         try {
-            Picasso.with(getContext()).load(baseUrl + androidFlavor.versionNumber).into(iconView);
+            Picasso.with(getContext()).load(baseUrl + androidFlavor.posterNumber).into(iconView);
 
             TextView versionNameView = (TextView) convertView.findViewById(R.id.flavor_text);
             versionNameView.setText(androidFlavor.versionName);

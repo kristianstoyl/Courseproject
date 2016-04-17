@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="?android:attr/actionBarSize"
-    tools:context="com.ntnu.kristian.courseproject.tmdbSearchFragment">
+    tools:context=".SearchFragment">
 
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

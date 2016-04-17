@@ -40,8 +40,6 @@ public class BrowseFragment extends Fragment {
     int page = 1;
     Boolean newPage = false;
 
-    public BrowseFragment() {
-    }
 
     @Override
     public void onStart(){
@@ -80,12 +78,12 @@ public class BrowseFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(LOG_TAG, "onItemClick, " + position);
-                //AndroidFlavor poster = mMovieAdapter.getItem(position);
-                //Intent i = new Intent(getActivity(), BrowseDetailActivity.class);
+                AndroidFlavor poster = mMovieAdapter.getItem(position);
+                Intent i = new Intent(getActivity(), DetailActivity.class);
                 // Inserts the entire poster object into intent, so we can use all its variables in detail
                 // -activity, it is not used now, but right now only movieposter is used in detailactivity
-                //i.putExtra("movieTag", poster);
-                //startActivity(i);
+                i.putExtra("movieTag", poster);
+                startActivity(i);
             }
         });
 
@@ -183,6 +181,9 @@ public class BrowseFragment extends Fragment {
             final String OWM_TITLE = "title";
             final String OWM_NUMBER = "poster_path";
             final String OWM_IMAGE = "id";
+            final String OWM_OVERVIEW = "overview";
+            final String OWM_RELEASE = "release_date";
+            final String OWM_ID = "id";
 
             JSONObject posterJson = new JSONObject(json);
             JSONArray posterArray = posterJson.getJSONArray(OWM_RESULTS);
@@ -194,6 +195,9 @@ public class BrowseFragment extends Fragment {
                 String name;
                 String number;
                 int image;
+                int id;
+                String release;
+                String overview;
 
                 JSONObject movie = posterArray.getJSONObject(i);
 
@@ -203,8 +207,11 @@ public class BrowseFragment extends Fragment {
                 number = movie.getString(OWM_NUMBER);
                 // ID of movie, never really used anywhere
                 image = movie.getInt(OWM_IMAGE);
+                id = movie.getInt(OWM_ID);
                 // adds movies to the list of posters.
-                posterList[i] = new AndroidFlavor(name, number, image);
+                release = movie.getString(OWM_RELEASE);
+                overview = movie.getString(OWM_OVERVIEW);
+                posterList[i] = new AndroidFlavor(id, name, number, image, release, overview);
             }
             return posterList;
         }
