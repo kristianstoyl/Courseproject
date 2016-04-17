@@ -1,13 +1,18 @@
 package com.ntnu.kristian.courseproject;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -53,21 +58,38 @@ public class SearchFragment extends Fragment {
         editText = (EditText) rootView.findViewById(R.id.edit_message);
         sendButton = (Button) rootView.findViewById(R.id.send_button);
         nextPageButton= (Button) rootView.findViewById(R.id.nextpage_button);
+        nextPageButton.setVisibility(View.INVISIBLE);
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(editText.getText().toString() != ""){
                     // Resets page number
+                    editText.clearFocus();
+                    sendButton.requestFocus();
+
                     newPage = false;
                     page = 1;
-
                     query = editText.getText().toString();
+
                     TMDBQueryManager tmQuery = new TMDBQueryManager();
                     tmQuery.execute();
+                    editText.clearFocus();
+                    // Makes next button visible
+                    nextPageButton.setVisibility(View.VISIBLE);
+                    // Removes keyboard on press
+                    InputMethodManager inputManager =
+                            (InputMethodManager) getContext().
+                                    getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(
+                            getActivity().getCurrentFocus().getWindowToken(),
+                            InputMethodManager.HIDE_NOT_ALWAYS);
+
                 }
             }
         });
+
+
         nextPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,6 +115,8 @@ public class SearchFragment extends Fragment {
                 startActivity(i);
             }
         });
+
+
         return rootView;
     }
 
