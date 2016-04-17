@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class SearchFragment extends Fragment {
@@ -43,6 +44,8 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_tmdb_search, container, false);
+        getActivity().setTitle("Search");
+
         gridView = (GridView) rootView.findViewById(R.id.search_gridview);
         mMovieAdapter = new AndroidFlavorAdapter(getActivity(), new ArrayList<AndroidFlavor>());
         gridView.setAdapter(mMovieAdapter);
@@ -100,7 +103,9 @@ public class SearchFragment extends Fragment {
         @Override
         protected AndroidFlavor[] doInBackground(String... params) {
             try {
-                return searchIMDB(query);
+                String s = query.replace(" ", "-");
+
+                return searchIMDB(s);
             } catch (IOException e) {
                 return null;
             }
