@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toolbar;
@@ -22,6 +23,7 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayer.OnInitializedListener;
 import com.google.android.youtube.player.YouTubePlayer.Provider;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+import com.ntnu.kristian.courseproject.Data.WishlistDbHelper;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -44,6 +46,11 @@ public class DetailActivityFragment extends Fragment {
     private TextView tv_overView;
     private TextView tv_release;
     private TextView tv_title;
+
+    // Database:
+    WishlistDbHelper db;
+    Button wishButton;
+    //
 
     private YouTubePlayer YPlayer;
 
@@ -75,6 +82,21 @@ public class DetailActivityFragment extends Fragment {
 
             GetTrailer();
         }
+
+        // DB:
+        db = new WishlistDbHelper(getActivity());
+        wishButton = (Button) rootView.findViewById(R.id.wishlistButton);
+        wishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(LOG_TAG, "BUTTON PRESSED -- " + poster.id + " --- " + poster.versionName );
+                if(db.insertData(poster.id, poster.versionName))
+                    Log.d(LOG_TAG, "Added to Database!");
+                else
+                    Log.d(LOG_TAG, "Could not add to Database for some reason");
+            }
+        });
+        //
         return rootView;
     }
 

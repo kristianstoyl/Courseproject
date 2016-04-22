@@ -5,13 +5,16 @@
     tools:context="com.ntnu.kristian.courseproject.WishlistFragment">
 
     <!-- TODO: Update blank fragment layout -->
-
     <TextView
         android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/wishList_tv"
+        />
+
+    <ListView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="60sp"
-        android:text="Wishlist"
-        android:id="@+id/textView2"
+        android:id="@+id/listView"
         android:layout_gravity="center" />
+
 </FrameLayout>
