@@ -25,8 +25,9 @@ public class WishlistFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private final String LOG_TAG = WishlistFragment.class.getSimpleName();
     WishlistDbHelper db;
-    TextView tv;
     ListView listView;
+    ArrayAdapter adapter;
+    Cursor res;
 
 
     @Override
@@ -40,29 +41,40 @@ public class WishlistFragment extends Fragment {
         // DB
         listView = (ListView) rootView.findViewById(R.id.listView);
         db = new WishlistDbHelper(getActivity());
-        tv = (TextView) rootView.findViewById(R.id.wishList_tv);
 
-        ArrayList<String> movies = getAllMovies(db);
-        ArrayAdapter adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, movies);
+        res = db.getAllData();
+        ArrayList<String> movies = getAllMovies(res);
+        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, movies);
         listView.setAdapter(adapter);
 
         final ArrayList<String> finalMovies = movies;
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Cursor cursor = getCursor();
                 Object o = listView.getItemAtPosition(position);
-                Log.d(LOG_TAG, o.toString()); // Delete
-                String stringId = String.valueOf(id);
-                Integer deleted = db.deleteData(stringId);
+                cursor.moveToPosition(position);
+                Log.d(LOG_TAG, String.valueOf(position) + " ---" + " -  - " + cursor.getString(2)); // Delete
+                String stringId = String.valueOf(o);
+                Integer deleted = db.deleteData(cursor.getString(0));
+                updateViews();
             }
         });
-
         return rootView;
     }
+    public Cursor getCursor(){
+        return res;
+    }
 
-    public ArrayList<String> getAllMovies(WishlistDbHelper db){
+    public void updateViews(){
+        res = db.getAllData();
+        ArrayList<String> movies = getAllMovies(res);
+        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, movies);
+        listView.setAdapter(adapter);
+    }
+
+    public ArrayList<String> getAllMovies(Cursor res){
         ArrayList<String> results = new ArrayList<>();
-        Cursor res = db.getAllData();
         if(res.getCount() == 0)
             // No data available
             ;
@@ -72,6 +84,24 @@ public class WishlistFragment extends Fragment {
                 buffer.append("Id :" + res.getString(1)+"\n");
                 buffer.append("Name :" + res.getString(2)+"\n");
                 results.add(res.getString(2));
+            }
+            //tv.setText(buffer);
+        }
+        return results;
+    }
+    public ArrayList<Movies> getAllMoviesMovie(WishlistDbHelper db){
+        ArrayList<Movies> results = new ArrayList<>();
+        Cursor res = db.getAllData();
+        if(res.getCount() == 0)
+            // No data available
+            ;
+        else {
+            StringBuffer buffer = new StringBuffer();
+            while(res.moveToNext()){
+                buffer.append("Id :" + res.getString(1)+"\n");
+                buffer.append("Name :" + res.getString(2)+"\n");
+                Movies mov = new Movies(Integer.getInteger(res.getString(1)), res.getString(2));
+                results.add(mov);
             }
             //tv.setText(buffer);
         }

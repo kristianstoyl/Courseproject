@@ -6,6 +6,7 @@ package com.ntnu.kristian.courseproject;
 public class Movies {
     public String name;
     public int id;
+
     public Movies(int id, String name){
         this.id = id;
         this.name = name;
