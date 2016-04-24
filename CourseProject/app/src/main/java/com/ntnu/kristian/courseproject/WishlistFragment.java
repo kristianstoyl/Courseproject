@@ -135,22 +135,4 @@ public class WishlistFragment extends Fragment {
             Log.d(LOG_TAG, "Share Action Provider is null?");
         }
     }
-    public ArrayList<Movies> getAllMoviesMovie(WishlistDbHelper db){
-        ArrayList<Movies> results = new ArrayList<>();
-        Cursor res = db.wishlistGetAllData();
-        if(res.getCount() == 0)
-            // No data available
-            ;
-        else {
-            StringBuffer buffer = new StringBuffer();
-            while(res.moveToNext()){
-                buffer.append("Id :" + res.getString(1)+"\n");
-                buffer.append("Name :" + res.getString(2)+"\n");
-                Movies mov = new Movies(Integer.getInteger(res.getString(1)), res.getString(2));
-                results.add(mov);
-            }
-            //tv.setText(buffer);
-        }
-        return results;
-    }
 }

@@ -18,9 +18,9 @@
             android:horizontalSpacing="9sp"
             android:verticalSpacing="9sp"
             android:numColumns="auto_fit"
-            android:stretchMode="columnWidth"
             android:gravity="center"
             android:background="#000000"
+            android:stretchMode="columnWidth"
             android:layout_above="@+id/nextpage_button" />
 
         <Button
