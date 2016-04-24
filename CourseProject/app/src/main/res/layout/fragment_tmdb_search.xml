@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="search"
+            android:hint="Search"
             android:textColor="#ffffff" />
 
         <Button
@@ -40,7 +40,7 @@
 
         <GridView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/search_gridview"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="450sp"
             android:columnWidth="90sp"
             android:horizontalSpacing="9sp"
@@ -61,9 +61,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@id/search_gridview"
             android:background="#000000"
             android:textColor="#ffffff" />
     </RelativeLayout>
-
 </LinearLayout>

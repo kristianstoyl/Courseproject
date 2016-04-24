@@ -310,7 +310,11 @@ public class DetailActivityFragment extends Fragment {
                 // result = youtube id for trailer, e.g: youtube.com/watch?v=<result>
 
                 if(result != "")
-                    LoadVideo(result);
+                    try {
+                        LoadVideo(result);
+                    } catch (IllegalStateException e){
+                        Log.w(LOG_TAG, e);
+                    }
             }
         }
     }

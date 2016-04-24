@@ -1,13 +1,19 @@
 package com.ntnu.kristian.courseproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -29,6 +35,9 @@ public class WishlistFragment extends Fragment {
     ArrayAdapter adapter;
     Cursor res;
 
+    public WishlistFragment(){
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,6 +97,38 @@ public class WishlistFragment extends Fragment {
             //tv.setText(buffer);
         }
         return results;
+    }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.menu_detail, menu);
+
+        // Retrieve the share menu item
+        MenuItem menuItem = menu.findItem(R.id.action_share);
+
+        // Get the provider and hold onto it to set/change the share intent.
+        ShareActionProvider mShareActionProvider =
+                (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+
+        // Attach an intent to this ShareActionProvider.  You can update this at any time,
+        // like when the user selects a new piece of data they might like to share.
+        try {
+            if (mShareActionProvider != null) {
+                res = db.getAllData();
+                ArrayList<String> movies = getAllMovies(res);
+                    Log.e(LOG_TAG, movies.size() + " <---");
+                String movieString = "Wishlist: ";
+                for(int i = 0; i < movies.size(); i++){
+                    movieString = movieString + "\n \n " + movies.get(i);
+                }
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, movieString);
+                mShareActionProvider.setShareIntent(shareIntent);
+            }
+        } catch(NullPointerException e){
+            Log.d(LOG_TAG, "Share Action Provider is null?");
+        }
     }
     public ArrayList<Movies> getAllMoviesMovie(WishlistDbHelper db){
         ArrayList<Movies> results = new ArrayList<>();
