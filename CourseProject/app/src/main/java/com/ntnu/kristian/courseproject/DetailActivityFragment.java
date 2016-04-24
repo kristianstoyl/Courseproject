@@ -8,9 +8,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -36,6 +41,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.zip.Inflater;
 
 //
 //YOUTUBE API KEY: AIzaSyCzuvfmoET-A0tHJwE-f8nTYWdBFtWVHgA
@@ -47,6 +53,9 @@ public class DetailActivityFragment extends Fragment {
     private TextView tv_release;
     private TextView tv_title;
 
+    private ShareActionProvider mShareActionProvider;
+
+
     // Database:
     WishlistDbHelper db;
     Button wishButton;
@@ -55,7 +64,9 @@ public class DetailActivityFragment extends Fragment {
     private YouTubePlayer YPlayer;
 
     final public String YOUTUBE_API_KEY = "AIzaSyCzuvfmoET-A0tHJwE-f8nTYWdBFtWVHgA";
-
+    public DetailActivityFragment(){
+        setHasOptionsMenu(true);
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -73,14 +84,15 @@ public class DetailActivityFragment extends Fragment {
             // w780 size, bigger is always better! (assuming you have fast internet)
             String baseUrl = "http://image.tmdb.org/t/p/w342";
             // Uses picasso library to load image from url to imageview
-
-            tv_title.setText(poster.versionName);
-            tv_overView.setText(poster.overView);
-            tv_release.setText(poster.releaseDate);
-
-            Picasso.with(getContext()).load(baseUrl + poster.posterNumber).into(imgView);
-
-            GetTrailer();
+            try{
+                tv_title.setText(poster.versionName);
+                tv_overView.setText(poster.overView);
+                tv_release.setText(poster.releaseDate);
+                Picasso.with(getContext()).load(baseUrl + poster.posterNumber).into(imgView);
+                GetTrailer();
+            } catch(NullPointerException e){
+                Log.w(LOG_TAG, e.fillInStackTrace());
+            }
         }
 
         // DB:
@@ -100,10 +112,34 @@ public class DetailActivityFragment extends Fragment {
         return rootView;
     }
 
+/*
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        Log.d(LOG_TAG, "qwklejhqwkliehqkwlhekljqwhekljqw id is" + item.toString());
+        switch (id) {
+            case 1: id = R.id.menu_item_share;
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, poster.versionName);
+                shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, poster.releaseDate);
+                startActivity((Intent.createChooser(shareIntent, "Share Text")));
+
+                return true;
+            default:
+
+                return super.onOptionsItemSelected(item);
+        }
+    }
+*/
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setSubtitle(poster.versionName);
+        try {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(poster.versionName);
+        } catch (NullPointerException e){
+            Log.w(LOG_TAG, e);
+        }
     }
 
     public void LoadVideo(String link){
@@ -132,6 +168,35 @@ public class DetailActivityFragment extends Fragment {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.youtube_fragment, youTubePlayerFragment).commit();
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.menu_detail, menu);
+
+        // Retrieve the share menu item
+        MenuItem menuItem = menu.findItem(R.id.action_share);
+
+        // Get the provider and hold onto it to set/change the share intent.
+        ShareActionProvider mShareActionProvider =
+                (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+
+        // Attach an intent to this ShareActionProvider.  You can update this at any time,
+        // like when the user selects a new piece of data they might like to share.
+        try {
+            if (mShareActionProvider != null) {
+                String baseURL = "https://www.themoviedb.org/movie/";
+                int movieID = poster.id;
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, poster.versionName + "\n Release date: " + poster.releaseDate + "\n " + baseURL + movieID);
+                mShareActionProvider.setShareIntent(shareIntent);
+            }
+        } catch(NullPointerException e){
+            Log.d(LOG_TAG, "Share Action Provider is null?");
+        }
+    }
+
 
     public void GetTrailer(){
         TrailerReceive trailer = new TrailerReceive();
