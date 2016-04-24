@@ -60,7 +60,7 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Add"
+                    android:text="Add to Wishlist"
                     android:id="@+id/wishlistButton"
                     android:layout_toRightOf="@id/detail_posterIV"
                     android:layout_below="@id/detail_overViewTV"

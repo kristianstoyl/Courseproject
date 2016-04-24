@@ -87,10 +87,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_browse) {
             // Start browse fragment
             ft.replace(R.id.nav_framelayout, new BrowseFragment()).commit();
-        } else if (id == R.id.nav_settings) {
+        } else if (id == R.id.nav_watched) {
             // Open settings fragment
-        } else if (id == R.id.nav_share) {
-            // Share movie/list
+            ft.replace(R.id.nav_framelayout, new WatchedFragment()).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

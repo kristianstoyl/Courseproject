@@ -2,14 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ntnu.kristian.courseproject.WishlistFragment">
+    tools:context="com.ntnu.kristian.courseproject.WatchedFragment">
 
     <!-- TODO: Update blank fragment layout -->
-
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/listView"
+        android:id="@+id/watched_listView"
         android:layout_gravity="center" />
     <TextView
         android:layout_width="match_parent"

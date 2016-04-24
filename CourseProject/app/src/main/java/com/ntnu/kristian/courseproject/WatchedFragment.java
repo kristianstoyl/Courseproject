@@ -1,7 +1,9 @@
 package com.ntnu.kristian.courseproject;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -22,16 +24,14 @@ import com.ntnu.kristian.courseproject.Data.WishlistDbHelper;
 import java.util.ArrayList;
 
 
-public class WishlistFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private final String LOG_TAG = WishlistFragment.class.getSimpleName();
+public class WatchedFragment extends Fragment {
+    private final String LOG_TAG = WatchedFragment.class.getSimpleName();
     WishlistDbHelper db;
     ListView listView;
     ArrayAdapter adapter;
     Cursor res;
 
-    public WishlistFragment(){
+    public WatchedFragment() {
         setHasOptionsMenu(true);
     }
 
@@ -39,15 +39,15 @@ public class WishlistFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_wishlist, container, false);
-        getActivity().setTitle("Wishlist");
-        Log.d(LOG_TAG, "wishList - onCreateView");
+        View rootView = inflater.inflate(R.layout.fragment_watched, container, false);
+        getActivity().setTitle("Watched");
+        Log.d(LOG_TAG, "watched - onCreateView");
 
         // DB
-        listView = (ListView) rootView.findViewById(R.id.listView);
+        listView = (ListView) rootView.findViewById(R.id.watched_listView);
         db = new WishlistDbHelper(getActivity());
 
-        res = db.wishlistGetAllData();
+        res = db.watchedGetAllData();
         ArrayList<String> movies = getAllMovies(res);
         adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, movies);
         listView.setAdapter(adapter);
@@ -61,16 +61,7 @@ public class WishlistFragment extends Fragment {
                 cursor.moveToPosition(position);
                 Log.d(LOG_TAG, String.valueOf(position) + " ---" + " -  - " + cursor.getString(2)); // Delete
                 String stringId = String.valueOf(o);
-                Integer deleted = db.wishlistDeleteData(cursor.getString(0));
-
-                try {
-                    if (db.watchedInsertData(Integer.valueOf(cursor.getString(1)), cursor.getString(2)))
-                        Log.d(LOG_TAG, "Added to Database!");
-                    else
-                        Log.d(LOG_TAG, "Could not add to Database for some reason");
-                } catch(NumberFormatException e){
-                    Log.w(LOG_TAG, e);
-                }
+                Integer deleted = db.watchedDeleteData(cursor.getString(0));
                 updateViews();
             }
         });
@@ -81,9 +72,9 @@ public class WishlistFragment extends Fragment {
     }
 
     public void updateViews(){
-        res = db.wishlistGetAllData();
+        res = db.watchedGetAllData();
         ArrayList<String> movies = getAllMovies(res);
-        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, movies);
+        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_expandable_list_item_1, movies);
         listView.setAdapter(adapter);
     }
 
@@ -119,10 +110,10 @@ public class WishlistFragment extends Fragment {
         // like when the user selects a new piece of data they might like to share.
         try {
             if (mShareActionProvider != null) {
-                res = db.wishlistGetAllData();
+                res = db.watchedGetAllData();
                 ArrayList<String> movies = getAllMovies(res);
-                    Log.e(LOG_TAG, movies.size() + " <---");
-                String movieString = "Wishlist: ";
+                Log.e(LOG_TAG, movies.size() + " <---");
+                String movieString = "Watched: ";
                 for(int i = 0; i < movies.size(); i++){
                     movieString = movieString + "\n \n " + movies.get(i);
                 }
@@ -134,23 +125,5 @@ public class WishlistFragment extends Fragment {
         } catch(NullPointerException e){
             Log.d(LOG_TAG, "Share Action Provider is null?");
         }
-    }
-    public ArrayList<Movies> getAllMoviesMovie(WishlistDbHelper db){
-        ArrayList<Movies> results = new ArrayList<>();
-        Cursor res = db.wishlistGetAllData();
-        if(res.getCount() == 0)
-            // No data available
-            ;
-        else {
-            StringBuffer buffer = new StringBuffer();
-            while(res.moveToNext()){
-                buffer.append("Id :" + res.getString(1)+"\n");
-                buffer.append("Name :" + res.getString(2)+"\n");
-                Movies mov = new Movies(Integer.getInteger(res.getString(1)), res.getString(2));
-                results.add(mov);
-            }
-            //tv.setText(buffer);
-        }
-        return results;
     }
 }

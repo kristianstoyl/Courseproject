@@ -21,12 +21,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayer.OnInitializedListener;
-import com.google.android.youtube.player.YouTubePlayer.Provider;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.ntnu.kristian.courseproject.Data.WishlistDbHelper;
 import com.squareup.picasso.Picasso;
@@ -41,7 +39,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.zip.Inflater;
 
 //
 //YOUTUBE API KEY: AIzaSyCzuvfmoET-A0tHJwE-f8nTYWdBFtWVHgA
@@ -52,7 +49,7 @@ public class DetailActivityFragment extends Fragment {
     private TextView tv_overView;
     private TextView tv_release;
     private TextView tv_title;
-
+    View rootView;
     private ShareActionProvider mShareActionProvider;
 
 
@@ -70,14 +67,23 @@ public class DetailActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         tv_overView = (TextView) rootView.findViewById(R.id.detail_overViewTV);
         tv_release = (TextView) rootView.findViewById(R.id.detail_release);
         tv_title = (TextView) rootView.findViewById(R.id.detail_titleTV);
+        wishButton = (Button) rootView.findViewById(R.id.wishlistButton);
+        db = new WishlistDbHelper(getActivity());
+
         Intent intent = getActivity().getIntent();
         if (intent != null){
+
             // receives the poster object from intent
             poster = intent.getParcelableExtra("movieTag");
+
+            if(db.wishlistSearchData(String.valueOf(poster.id))) {
+                wishButton.setVisibility(View.INVISIBLE);
+                //updateView();
+            }
             // initializes imageview from fragment_detail
             ImageView imgView = (ImageView) rootView.findViewById(R.id.detail_posterIV);
             // base url, common for all movieposters
@@ -96,14 +102,14 @@ public class DetailActivityFragment extends Fragment {
         }
 
         // DB:
-        db = new WishlistDbHelper(getActivity());
-        wishButton = (Button) rootView.findViewById(R.id.wishlistButton);
         wishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(LOG_TAG, "BUTTON PRESSED -- " + poster.id + " --- " + poster.versionName );
-                if(db.insertData(poster.id, poster.versionName))
+                if(db.wishlistInsertData(poster.id, poster.versionName)) {
+                    wishButton.setVisibility(View.INVISIBLE);
                     Log.d(LOG_TAG, "Added to Database!");
+                }
                 else
                     Log.d(LOG_TAG, "Could not add to Database for some reason");
             }
@@ -111,27 +117,6 @@ public class DetailActivityFragment extends Fragment {
         //
         return rootView;
     }
-
-/*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        Log.d(LOG_TAG, "qwklejhqwkliehqkwlhekljqwhekljqw id is" + item.toString());
-        switch (id) {
-            case 1: id = R.id.menu_item_share;
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType("text/plain");
-                shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, poster.versionName);
-                shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, poster.releaseDate);
-                startActivity((Intent.createChooser(shareIntent, "Share Text")));
-
-                return true;
-            default:
-
-                return super.onOptionsItemSelected(item);
-        }
-    }
-*/
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
