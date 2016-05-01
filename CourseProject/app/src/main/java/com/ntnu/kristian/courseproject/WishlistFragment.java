@@ -51,7 +51,7 @@ public class WishlistFragment extends Fragment {
 
         res = db.wishlistGetAllData();
         ArrayList<String> movies = getAllMovies(res);
-        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, movies);
+        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_expandable_list_item_1, movies);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

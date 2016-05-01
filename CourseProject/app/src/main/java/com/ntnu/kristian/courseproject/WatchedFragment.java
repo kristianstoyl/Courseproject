@@ -52,7 +52,7 @@ public class WatchedFragment extends Fragment {
 
         res = db.watchedGetAllData();
         ArrayList<String> movies = getAllMovies(res);
-        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, movies);
+        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_expandable_list_item_1, movies);
         listView.setAdapter(adapter);
 
         final ArrayList<String> finalMovies = movies;
