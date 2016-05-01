@@ -3,6 +3,7 @@ package com.ntnu.kristian.courseproject;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -56,6 +57,7 @@ public class DetailActivityFragment extends Fragment {
     // Database:
     WishlistDbHelper db;
     Button wishButton;
+    Button watchedButton;
     //
 
     private YouTubePlayer YPlayer;
@@ -72,6 +74,7 @@ public class DetailActivityFragment extends Fragment {
         tv_release = (TextView) rootView.findViewById(R.id.detail_release);
         tv_title = (TextView) rootView.findViewById(R.id.detail_titleTV);
         wishButton = (Button) rootView.findViewById(R.id.wishlistButton);
+        watchedButton = (Button) rootView.findViewById(R.id.detail_watchedbutton);
         db = new WishlistDbHelper(getActivity());
 
         Intent intent = getActivity().getIntent();
@@ -81,8 +84,10 @@ public class DetailActivityFragment extends Fragment {
             poster = intent.getParcelableExtra("movieTag");
 
             if(db.wishlistSearchData(String.valueOf(poster.id))) {
-                wishButton.setVisibility(View.INVISIBLE);
-                //updateView();
+                watchedButton.setText(R.string.remove_wishlist_button);
+            }
+            if(db.watchedSearchData(String.valueOf(poster.id))) {
+                watchedButton.setText(R.string.remove_watched_button);
             }
             // initializes imageview from fragment_detail
             ImageView imgView = (ImageView) rootView.findViewById(R.id.detail_posterIV);
@@ -106,9 +111,34 @@ public class DetailActivityFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(LOG_TAG, "BUTTON PRESSED -- " + poster.id + " --- " + poster.versionName );
-                if(db.wishlistInsertData(poster.id, poster.versionName)) {
-                    wishButton.setVisibility(View.INVISIBLE);
-                    Log.d(LOG_TAG, "Added to Database!");
+                if(db.wishlistSearchData(String.valueOf(poster.id))) {
+                    // If movie is already added to table
+                    Cursor cursor = db.wishlistSearchDataCursor(String.valueOf(poster.id));
+                    cursor.moveToPosition(0);
+                    db.wishlistDeleteData(cursor.getString(0));
+                    wishButton.setText(R.string.wishlist_button);
+                }else if(db.wishlistInsertData(poster.id, poster.versionName)) {
+                    wishButton.setText(R.string.remove_wishlist_button);
+                    Log.d(LOG_TAG, "Added to wishlist!");
+                }
+                else
+                    Log.d(LOG_TAG, "Could not add to Database for some reason");
+            }
+        });
+
+        watchedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(LOG_TAG, "BUTTON PRESSED -- " + poster.id + " --- " + poster.versionName );
+                if(db.watchedSearchData(String.valueOf(poster.id))) {
+                    // If movie is already added to table
+                    Cursor cursor = db.watchedSearchDataCursor(String.valueOf(poster.id));
+                    cursor.moveToPosition(0);
+                    db.watchedDeleteData(cursor.getString(0));
+                    watchedButton.setText(R.string.watched_button);
+                }else if(db.watchedInsertData(poster.id, poster.versionName)) {
+                    watchedButton.setText(R.string.remove_watched_button);
+                    Log.d(LOG_TAG, "Added to Watched!");
                 }
                 else
                     Log.d(LOG_TAG, "Could not add to Database for some reason");

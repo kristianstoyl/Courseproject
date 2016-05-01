@@ -86,6 +86,13 @@ public class WishlistDbHelper extends SQLiteOpenHelper {
         }
         return false;
     }
+    public Cursor wishlistSearchDataCursor(String id){
+        SQLiteDatabase db = this.getReadableDatabase(); // Gets database instance
+
+        String Query = "Select * from " + WishlistContract.WishlistEntry.TABLE_NAME + " where " + WishlistContract.WishlistEntry.MOVIE_ID + " = " + id;
+        Cursor cursor = db.rawQuery(Query, null);
+        return cursor;
+    }
 
     // Watched:
     public boolean watchedInsertData(int id, String name){
@@ -109,5 +116,28 @@ public class WishlistDbHelper extends SQLiteOpenHelper {
     public Integer watchedDeleteData(String id){
         SQLiteDatabase db = this.getReadableDatabase(); // Gets database instance
         return db.delete(WishlistContract.WatchedlistEntry.TABLE_NAME, WishlistContract.WatchedlistEntry._ID +" = ?", new String[]{id});
+    }
+
+    public boolean watchedSearchData(String id){
+        SQLiteDatabase db = this.getReadableDatabase(); // Gets database instance
+
+        String Query = "Select * from " + WishlistContract.WatchedlistEntry.TABLE_NAME + " where " + WishlistContract.WatchedlistEntry.MOVIE_ID + " = " + id;
+        Cursor cursor = db.rawQuery(Query, null);
+        if(cursor!=null) {
+            if(cursor.getCount()>0) {
+                cursor.close();
+                return true;
+            }
+            cursor.close();
+        }
+        return false;
+    }
+
+    public Cursor watchedSearchDataCursor(String id){
+        SQLiteDatabase db = this.getReadableDatabase(); // Gets database instance
+
+        String Query = "Select * from " + WishlistContract.WatchedlistEntry.TABLE_NAME + " where " + WishlistContract.WatchedlistEntry.MOVIE_ID + " = " + id;
+        Cursor cursor = db.rawQuery(Query, null);
+        return cursor;
     }
 }

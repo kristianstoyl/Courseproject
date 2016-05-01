@@ -1,4 +1,16 @@
 <resources>
+    <!-- MY OWN STRINGS -->
+    <string name="watched_button">Add to Watched</string>
+    <string name="wishlist_button">Add to Wishlist</string>
+    <string name="remove_watched_button">Remove from Watched</string>
+    <string name="remove_wishlist_button">Remove from Wishlist</string>
+
+    <string name="next_json_page">More</string>
+    <string name="search">Search</string>
+
+
+    <string name="dev_name">Kristian Støylen</string>
+    <!-- ~~~~ -->
     <string name="app_name">CourseProject</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

@@ -1,12 +1,14 @@
 package com.ntnu.kristian.courseproject;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.ntnu.kristian.courseproject.Data.WishlistDbHelper;
 
@@ -56,13 +59,27 @@ public class WatchedFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Cursor cursor = getCursor();
-                Object o = listView.getItemAtPosition(position);
-                cursor.moveToPosition(position);
-                Log.d(LOG_TAG, String.valueOf(position) + " ---" + " -  - " + cursor.getString(2)); // Delete
-                String stringId = String.valueOf(o);
-                Integer deleted = db.watchedDeleteData(cursor.getString(0));
-                updateViews();
+                final int position_final = position;
+
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Delete entry")
+                        .setMessage("Are you sure you want to delete this entry?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with delete
+                                Cursor cursor = getCursor();
+                                cursor.moveToPosition(position_final);
+                                Integer deleted = db.watchedDeleteData(cursor.getString(0));
+                                updateViews();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
             }
         });
         return rootView;

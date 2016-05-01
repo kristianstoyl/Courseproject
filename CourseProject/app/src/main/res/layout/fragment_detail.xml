@@ -56,15 +56,28 @@
                     android:layout_below="@id/detail_titleTV"
                     android:layout_toRightOf="@id/detail_posterIV"
                     android:layout_toEndOf="@id/detail_posterIV"/>
-
-                <Button
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Add to Wishlist"
-                    android:id="@+id/wishlistButton"
+                    android:orientation="horizontal"
                     android:layout_toRightOf="@id/detail_posterIV"
-                    android:layout_below="@id/detail_overViewTV"
-                    />
+                    android:layout_toEndOf="@id/detail_posterIV"
+                    android:layout_below="@id/detail_overViewTV">
+                    <Button
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/wishlist_button"
+                        android:id="@+id/wishlistButton"
+                        />
+                    <Button android:id="@+id/detail_watchedbutton"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/watched_button"
+                        />
+                </LinearLayout>
+
             </RelativeLayout>
 
             <FrameLayout android:id="@+id/youtube_fragment"
