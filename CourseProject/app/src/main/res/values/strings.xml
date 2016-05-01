@@ -8,10 +8,15 @@
     <string name="next_json_page">More</string>
     <string name="search">Search</string>
 
-
     <string name="dev_name">Kristian Støylen</string>
+
+    <string name="watched_title">Watched</string>
+    <string name="wishlist_title">Wishlist</string>
+    <string name="search_title">Search</string>
+    <string name="browse_title">Browse</string>
+
     <!-- ~~~~ -->
-    <string name="app_name">CourseProject</string>
+    <string name="app_name">SkyNet</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

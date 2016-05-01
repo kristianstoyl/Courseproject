@@ -49,7 +49,7 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_tmdb_search, container, false);
-        getActivity().setTitle("Search");
+        getActivity().setTitle(R.string.search_title);
 
         gridView = (GridView) rootView.findViewById(R.id.search_gridview);
         mMovieAdapter = new AndroidFlavorAdapter(getActivity(), new ArrayList<AndroidFlavor>());

@@ -84,7 +84,7 @@ public class DetailActivityFragment extends Fragment {
             poster = intent.getParcelableExtra("movieTag");
 
             if(db.wishlistSearchData(String.valueOf(poster.id))) {
-                watchedButton.setText(R.string.remove_wishlist_button);
+                wishButton.setText(R.string.remove_wishlist_button);
             }
             if(db.watchedSearchData(String.valueOf(poster.id))) {
                 watchedButton.setText(R.string.remove_watched_button);

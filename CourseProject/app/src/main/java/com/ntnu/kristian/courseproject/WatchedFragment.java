@@ -43,7 +43,7 @@ public class WatchedFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_watched, container, false);
-        getActivity().setTitle("Watched");
+        getActivity().setTitle(R.string.watched_title);
         Log.d(LOG_TAG, "watched - onCreateView");
 
         // DB

@@ -42,7 +42,7 @@ public class WishlistFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_wishlist, container, false);
-        getActivity().setTitle("Wishlist");
+        getActivity().setTitle(R.string.wishlist_title);
         Log.d(LOG_TAG, "wishList - onCreateView");
 
         // DB
@@ -54,7 +54,6 @@ public class WishlistFragment extends Fragment {
         adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, movies);
         listView.setAdapter(adapter);
 
-        final ArrayList<String> finalMovies = movies;
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -75,6 +74,23 @@ public class WishlistFragment extends Fragment {
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // do nothing
+                            }
+                        })
+                        .setNeutralButton("Move to watched", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                                Cursor cursor = getCursor();
+                                cursor.moveToPosition(position_final);
+                                try {
+                                    if(!db.watchedSearchData(String.valueOf(cursor.getString(1)))) {
+                                        if (db.watchedInsertData(Integer.valueOf(cursor.getString(1)), cursor.getString(2)))
+                                            Log.d(LOG_TAG, "Added to Database!");
+                                        else
+                                            Log.d(LOG_TAG, "Could not add to Database for some reason");
+                                    }
+                                } catch(NumberFormatException e){
+                                    Log.w(LOG_TAG, e);
+                                }
                             }
                         })
                         .setIcon(android.R.drawable.ic_dialog_alert)
