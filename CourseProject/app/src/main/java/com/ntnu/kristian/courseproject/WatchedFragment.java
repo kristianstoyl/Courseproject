@@ -82,6 +82,7 @@ public class WatchedFragment extends Fragment {
                         .show();
             }
         });
+        updateViews();
         return rootView;
     }
     public Cursor getCursor(){

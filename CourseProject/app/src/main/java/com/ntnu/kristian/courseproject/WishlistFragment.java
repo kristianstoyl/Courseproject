@@ -97,6 +97,7 @@ public class WishlistFragment extends Fragment {
                         .show();
             }
         });
+        updateViews();
         return rootView;
     }
     public Cursor getCursor(){
@@ -106,7 +107,7 @@ public class WishlistFragment extends Fragment {
     public void updateViews(){
         res = db.wishlistGetAllData();
         ArrayList<String> movies = getAllMovies(res);
-        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, movies);
+        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_expandable_list_item_1, movies);
         listView.setAdapter(adapter);
     }
 
