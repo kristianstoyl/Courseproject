@@ -25,8 +25,11 @@ import java.util.ArrayList;
 
 
 public class WishlistFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    /**
+     * This fragment is showing a list of movies found from the
+     * wishlist database table. It's purpose is to show all movies
+     * the user wants to see
+     */
     private final String LOG_TAG = WishlistFragment.class.getSimpleName();
     WishlistDbHelper db;
     ListView listView;
@@ -35,7 +38,7 @@ public class WishlistFragment extends Fragment {
 
     public WishlistFragment(){
         setHasOptionsMenu(true);
-    }
+    }// Turns on optionmenu so we can use sharing
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,14 +46,16 @@ public class WishlistFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_wishlist, container, false);
         getActivity().setTitle(R.string.wishlist_title);
-        Log.d(LOG_TAG, "wishList - onCreateView");
-
-        // DB
         listView = (ListView) rootView.findViewById(R.id.listView);
+
+        // DBclass
         db = new WishlistDbHelper(getActivity());
 
-        res = db.wishlistGetAllData();
+        // Returns a cursor with all data from the SQLite database
+        res = db.watchedGetAllData();
+        // Returns an arraylist of Strings containing the names of all movies from SQLite database
         ArrayList<String> movies = getAllMovies(res);
+        // Sets the adapter as an ArrayAdapter with simple_expandable_list_item_1 layout
         adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_expandable_list_item_1, movies);
         listView.setAdapter(adapter);
 
@@ -59,6 +64,7 @@ public class WishlistFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final int position_final = position;
 
+                // Pops up an alertbox for user to confirm deletion of entry
                 new AlertDialog.Builder(getContext())
                         .setTitle("Delete entry")
                         .setMessage("Are you sure you want to delete this entry?")
@@ -67,8 +73,12 @@ public class WishlistFragment extends Fragment {
                                 // continue with delete
                                 Cursor cursor = getCursor();
                                 cursor.moveToPosition(position_final);
+                                // Cursor.getString(0) is the ID
+                                // Cursor.getString(1) is first table entry(movie_ID)
+                                // cursor.getString(2) is second table entry(movie name)
+                                // Deletes entry with this id
                                 Integer deleted = db.wishlistDeleteData(cursor.getString(0));
-                                updateViews();
+                                updateViews(); // Refreshes views so listentry gets removed
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -78,11 +88,13 @@ public class WishlistFragment extends Fragment {
                         })
                         .setNeutralButton("Move to watched", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
+                                // Moves movie to Watched database table
                                 Cursor cursor = getCursor();
                                 cursor.moveToPosition(position_final);
                                 try {
+                                    // Searches table for entry, only continues if movie is NOT in watched list
                                     if(!db.watchedSearchData(String.valueOf(cursor.getString(1)))) {
+                                        // Inserts movie (cursor.getString(1) = TMDB ID, cursor.getString(2) = movie name
                                         if (db.watchedInsertData(Integer.valueOf(cursor.getString(1)), cursor.getString(2)))
                                             Log.d(LOG_TAG, "Added to Database!");
                                         else
@@ -104,6 +116,7 @@ public class WishlistFragment extends Fragment {
         return res;
     }
 
+    // Refreshes listview
     public void updateViews(){
         res = db.wishlistGetAllData();
         ArrayList<String> movies = getAllMovies(res);
@@ -111,6 +124,11 @@ public class WishlistFragment extends Fragment {
         listView.setAdapter(adapter);
     }
 
+    /**
+     * Takes in a cursor object with database data, returns list of ID and names
+     * @param res
+     * @return Arraylist of movienames
+     */
     public ArrayList<String> getAllMovies(Cursor res){
         ArrayList<String> results = new ArrayList<>();
         if(res.getCount() == 0)

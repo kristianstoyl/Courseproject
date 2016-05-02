@@ -1,18 +1,15 @@
 package com.ntnu.kristian.courseproject;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,10 +25,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class SearchFragment extends Fragment {
+    /**
+     * This fragment is for searching for specific movie
+     */
     private final String LOG_TAG = BrowseFragment.class.getSimpleName();
     private View rootView;
     private AndroidFlavorAdapter mMovieAdapter;
@@ -40,7 +39,7 @@ public class SearchFragment extends Fragment {
     private Button sendButton;
     private Button nextPageButton;
 
-    int page = 1;
+    int page = 1; // Current page, TMDB api only allows 20 movies per page
     Boolean newPage = false;
     String query;
 
@@ -49,35 +48,39 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_tmdb_search, container, false);
+        // Sets the toolbar title to Search
         getActivity().setTitle(R.string.search_title);
 
         gridView = (GridView) rootView.findViewById(R.id.search_gridview);
+        // Custom adapter for movie grid
         mMovieAdapter = new AndroidFlavorAdapter(getActivity(), new ArrayList<AndroidFlavor>());
         gridView.setAdapter(mMovieAdapter);
 
         editText = (EditText) rootView.findViewById(R.id.edit_message);
         sendButton = (Button) rootView.findViewById(R.id.send_button);
         nextPageButton= (Button) rootView.findViewById(R.id.nextpage_button);
+        // Leaves the nextpage button hidden until sendButton is pressed
         nextPageButton.setVisibility(View.INVISIBLE);
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(editText.getText().toString() != ""){
-                    // Resets page number
+                    // Clears focus of edit text
                     editText.clearFocus();
                     sendButton.requestFocus();
 
                     newPage = false;
+                    // Resets page number
                     page = 1;
-                    query = editText.getText().toString();
+                    query = editText.getText().toString(); // Sets global variable query to edittext text
 
-                    TMDBQueryManager tmQuery = new TMDBQueryManager();
-                    tmQuery.execute();
+                    SearchManager sQuery = new SearchManager();
+                    sQuery.execute(); // Executes searchManager to search for the query
                     editText.clearFocus();
                     // Makes next button visible
                     nextPageButton.setVisibility(View.VISIBLE);
-                    // Removes keyboard on press
+                    // Removes keyboard
                     InputMethodManager inputManager =
                             (InputMethodManager) getContext().
                                     getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -89,7 +92,9 @@ public class SearchFragment extends Fragment {
             }
         });
 
-
+        /**
+         * Sends query for the next page
+         */
         nextPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,8 +102,8 @@ public class SearchFragment extends Fragment {
                     newPage = true;
                     page++;
                     query = editText.getText().toString();
-                    TMDBQueryManager tmQuery = new TMDBQueryManager();
-                    tmQuery.execute();
+                    SearchManager sQuery = new SearchManager();
+                    sQuery.execute();
                 }
             }
         });
@@ -120,16 +125,18 @@ public class SearchFragment extends Fragment {
         return rootView;
     }
 
-    private class TMDBQueryManager extends AsyncTask<String, Void, AndroidFlavor[]> {
+    private class SearchManager extends AsyncTask<String, Void, AndroidFlavor[]> {
 
+        // ThemovieDB API key, should probably use a String in Strings.XML
         private final String TMDB_API_KEY = "5aa5bc75c39f6d200fa6bd741896baaa";
 
         @Override
         protected AndroidFlavor[] doInBackground(String... params) {
             try {
+                // Just make sure spaces get formatted properly for URL
                 String s = query.replace(" ", "-");
 
-                return searchIMDB(s);
+                return searchTMDB(s);
             } catch (IOException e) {
                 return null;
             }
@@ -138,7 +145,7 @@ public class SearchFragment extends Fragment {
         @Override
         protected void onPostExecute(AndroidFlavor[] result) {
             if(result != null){
-                // clears adapter, just to make sure there is no unnecessary objects in it
+                // clears adapter if not new page, just to make sure there is no unnecessary objects in it
                 if(!newPage)
                     mMovieAdapter.clear();
                 for(AndroidFlavor movieList : result){
@@ -152,7 +159,7 @@ public class SearchFragment extends Fragment {
          * @param query The query to search.
          * @return A list of all hits.
          */
-        public AndroidFlavor[] searchIMDB(String query) throws IOException {
+        public AndroidFlavor[] searchTMDB(String query) throws IOException {
             // Build URL
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("http://api.themoviedb.org/3/search/movie");

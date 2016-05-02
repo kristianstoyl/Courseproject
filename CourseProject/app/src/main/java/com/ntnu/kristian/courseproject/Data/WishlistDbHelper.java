@@ -24,7 +24,7 @@ public class WishlistDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Create tables, what should I include?
+        // Create tables, with ThemovieDB id and movie name columns
         final String SQL_CREATE_WISHLIST_TABLE = "CREATE TABLE " + WishlistContract.WishlistEntry.TABLE_NAME+ " (" +
                 WishlistContract.WishlistEntry._ID + " INTEGER PRIMARY KEY," +
                 WishlistContract.WishlistEntry.MOVIE_ID + " INTEGER UNIQUE NOT NULL," +
@@ -43,12 +43,13 @@ public class WishlistDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        // Runs when you update database versions. Currently clears tables
         db.execSQL("DROP TABLE IF EXISTS " + WishlistContract.WishlistEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + WishlistContract.WatchedlistEntry.TABLE_NAME);
         onCreate(db);
     }
 
+    // Insert data to database, only needs TMDB id and name
     public boolean wishlistInsertData(int id, String name){
         SQLiteDatabase db = this.getReadableDatabase(); // Gets database instance
         ContentValues contentValues = new ContentValues(); // Create contentValue instance for storing table
@@ -61,21 +62,28 @@ public class WishlistDbHelper extends SQLiteOpenHelper {
             return true;
     }
 
+    // Returns a cursor with all data
     public Cursor wishlistGetAllData(){
         SQLiteDatabase db = this.getReadableDatabase(); // Gets database instance
         Cursor res = db.rawQuery("select * from " + WishlistContract.WishlistEntry.TABLE_NAME, null);
         return res;
     }
 
+    // Deletes data from the _ID received. (database ID, NOT themoviedb ID)
     public Integer wishlistDeleteData(String id){
         SQLiteDatabase db = this.getReadableDatabase(); // Gets database instance
         return db.delete(WishlistContract.WishlistEntry.TABLE_NAME, WishlistContract.WishlistEntry._ID +" = ?", new String[]{id});
     }
 
-    public boolean wishlistSearchData(String id){
+    /**
+     * Searches database for themoviedb ID received
+     * @param tmdbID
+     * @return  True or false depending if movie is found
+     */
+    public boolean wishlistSearchData(String tmdbID){
         SQLiteDatabase db = this.getReadableDatabase(); // Gets database instance
 
-        String Query = "Select * from " + WishlistContract.WishlistEntry.TABLE_NAME + " where " + WishlistContract.WishlistEntry.MOVIE_ID + " = " + id;
+        String Query = "Select * from " + WishlistContract.WishlistEntry.TABLE_NAME + " where " + WishlistContract.WishlistEntry.MOVIE_ID + " = " + tmdbID;
         Cursor cursor = db.rawQuery(Query, null);
         if(cursor!=null) {
             if(cursor.getCount()>0) {
@@ -86,6 +94,12 @@ public class WishlistDbHelper extends SQLiteOpenHelper {
         }
         return false;
     }
+
+    /**
+     * Same as wishlistSearchData, but this one returns the datatable itself instead of just true or falce
+     * @param id themovieDB ID
+     * @return Cursor with table data
+     */
     public Cursor wishlistSearchDataCursor(String id){
         SQLiteDatabase db = this.getReadableDatabase(); // Gets database instance
 
@@ -94,7 +108,7 @@ public class WishlistDbHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    // Watched:
+    // Watched methods, --EXACT SAME AS WISHLIST METHODS, just for watched tables.
     public boolean watchedInsertData(int id, String name){
         SQLiteDatabase db = this.getReadableDatabase(); // Gets database instance
         ContentValues contentValues = new ContentValues(); // Create contentValue instance for storing table

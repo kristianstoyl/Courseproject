@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        setHomeScreen();
+        setHomeScreen(); // Setstartup fragment to Browse fragment
     }
 
     public void setHomeScreen(){
@@ -74,21 +74,20 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        // Replaces current fragment with new fragment
         int id = item.getItemId();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        Fragment fragment;
-        if (id == R.id.nav_search) {
-            fragment = new SearchFragment();
-            ft.replace(R.id.nav_framelayout, fragment).commit();
+        if (id == R.id.nav_search) { // Search Fragment
+            ft.replace(R.id.nav_framelayout, new SearchFragment()).commit();
         } else if (id == R.id.nav_wishlist) {
-            // Handle Wishlist fragment
+            // Start Wishlist fragment
             ft.replace(R.id.nav_framelayout, new WishlistFragment()).commit();
         } else if (id == R.id.nav_browse) {
             // Start browse fragment
             ft.replace(R.id.nav_framelayout, new BrowseFragment()).commit();
         } else if (id == R.id.nav_watched) {
-            // Open settings fragment
+            // Open watched fragment
             ft.replace(R.id.nav_framelayout, new WatchedFragment()).commit();
         }
 

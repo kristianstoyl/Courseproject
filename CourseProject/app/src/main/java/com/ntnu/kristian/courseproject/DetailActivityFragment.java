@@ -62,19 +62,24 @@ public class DetailActivityFragment extends Fragment {
 
     private YouTubePlayer YPlayer;
 
+    // TODO put in strings.XML
     final public String YOUTUBE_API_KEY = "AIzaSyCzuvfmoET-A0tHJwE-f8nTYWdBFtWVHgA";
     public DetailActivityFragment(){
         setHasOptionsMenu(true);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        // Initializes buttons and views
         tv_overView = (TextView) rootView.findViewById(R.id.detail_overViewTV);
         tv_release = (TextView) rootView.findViewById(R.id.detail_release);
         tv_title = (TextView) rootView.findViewById(R.id.detail_titleTV);
         wishButton = (Button) rootView.findViewById(R.id.wishlistButton);
         watchedButton = (Button) rootView.findViewById(R.id.detail_watchedbutton);
+
+        // Database, explained further in Watched and Wishlist fragments
         db = new WishlistDbHelper(getActivity());
 
         Intent intent = getActivity().getIntent();
@@ -92,14 +97,16 @@ public class DetailActivityFragment extends Fragment {
             // initializes imageview from fragment_detail
             ImageView imgView = (ImageView) rootView.findViewById(R.id.detail_posterIV);
             // base url, common for all movieposters
-            // w780 size, bigger is always better! (assuming you have fast internet)
+            // w342 size, bigger is always better! (assuming you have fast internet)
             String baseUrl = "http://image.tmdb.org/t/p/w342";
-            // Uses picasso library to load image from url to imageview
             try{
                 tv_title.setText(poster.versionName);
                 tv_overView.setText(poster.overView);
                 tv_release.setText(poster.releaseDate);
+
+                // Uses picasso library to load image from url to imageview
                 Picasso.with(getContext()).load(baseUrl + poster.posterNumber).into(imgView);
+                //Loads youtubetrailer
                 GetTrailer();
             } catch(NullPointerException e){
                 Log.w(LOG_TAG, e.fillInStackTrace());
@@ -157,6 +164,10 @@ public class DetailActivityFragment extends Fragment {
         }
     }
 
+    /**
+     * Loads youtube video,
+     * @param link string link to youtube video
+     */
     public void LoadVideo(String link){
         YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
         final String youtubeLink = link;
@@ -166,24 +177,24 @@ public class DetailActivityFragment extends Fragment {
 
                 if (!wasRestored) {
                     YPlayer = player;
-                    //YPlayer.setFullscreen(true);
-                    YPlayer.setShowFullscreenButton(false);
-                    YPlayer.loadVideo(youtubeLink);
-                    YPlayer.pause();
-
-                    //YPlayer.play();
+                    YPlayer.setShowFullscreenButton(false); // Turn off fullscreen to avoid landscape bugs
+                    YPlayer.loadVideo(youtubeLink); // loads youtube video
+                    YPlayer.pause(); // Dosen't pause video on start sadly
                 }
             }
             @Override
             public void onInitializationFailure(YouTubePlayer.Provider arg0, YouTubeInitializationResult arg1) {
                 // TODO Auto-generated method stub
-
             }
         });
+        // adds a youtubeplayerfragment
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.youtube_fragment, youTubePlayerFragment).commit();
     }
 
+    /**
+     * Sharing
+     */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -200,6 +211,7 @@ public class DetailActivityFragment extends Fragment {
         // like when the user selects a new piece of data they might like to share.
         try {
             if (mShareActionProvider != null) {
+                // Shares name of movie, release date, link to movie on themoviedb.org
                 String baseURL = "https://www.themoviedb.org/movie/";
                 int movieID = poster.id;
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -212,7 +224,9 @@ public class DetailActivityFragment extends Fragment {
         }
     }
 
-
+    /**
+     * Starts the background task to fetch data from cloud
+     */
     public void GetTrailer(){
         TrailerReceive trailer = new TrailerReceive();
         trailer.execute();
@@ -238,10 +252,13 @@ public class DetailActivityFragment extends Fragment {
             Log.d(LOG_TAG, "doInBackground");
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
+
+            // TMDB api key
             String API_KEY = "5aa5bc75c39f6d200fa6bd741896baaa";
             String posterJsonStr = null;
 
             StringBuilder stringBuilder = new StringBuilder();
+            // Base url + movie id + /videos = movielink
             stringBuilder.append("http://api.themoviedb.org/3/movie/" + poster.id + "/videos");
             stringBuilder.append("?api_key=" + API_KEY);
 

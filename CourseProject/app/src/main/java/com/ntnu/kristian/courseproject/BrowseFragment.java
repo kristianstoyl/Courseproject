@@ -103,11 +103,10 @@ public class BrowseFragment extends Fragment {
 
         @Override
         protected AndroidFlavor[] doInBackground(String... params){
-            // JsonList
-            // http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=5aa5bc75c39f6d200fa6bd741896baaa
-
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
+
+            // ThemovieDB API key, should probably use a String in Strings.XML
             String API_KEY = "5aa5bc75c39f6d200fa6bd741896baaa";
             String posterJsonStr = null;
 

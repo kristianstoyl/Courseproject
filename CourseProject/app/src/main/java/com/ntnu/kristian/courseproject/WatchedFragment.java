@@ -28,6 +28,11 @@ import java.util.ArrayList;
 
 
 public class WatchedFragment extends Fragment {
+    /**
+     * This fragment is showing a list of movies found from the
+     * watched database table. It's purpose is to show all movies
+     * the user has seen
+     */
     private final String LOG_TAG = WatchedFragment.class.getSimpleName();
     WishlistDbHelper db;
     ListView listView;
@@ -35,7 +40,7 @@ public class WatchedFragment extends Fragment {
     Cursor res;
 
     public WatchedFragment() {
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(true); // Turns on optionmenu so we can use sharing
     }
 
     @Override
@@ -44,23 +49,26 @@ public class WatchedFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_watched, container, false);
         getActivity().setTitle(R.string.watched_title);
-        Log.d(LOG_TAG, "watched - onCreateView");
 
-        // DB
         listView = (ListView) rootView.findViewById(R.id.watched_listView);
+        // Database class
         db = new WishlistDbHelper(getActivity());
 
+        // Returns a cursor with all data from the SQLite database
         res = db.watchedGetAllData();
+        // Returns an arraylist of Strings containing the names of all movies from SQLite database
         ArrayList<String> movies = getAllMovies(res);
+        // Sets the adapter as an ArrayAdapter with simple_expandable_list_item_1 layout
         adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_expandable_list_item_1, movies);
         listView.setAdapter(adapter);
 
-        final ArrayList<String> finalMovies = movies;
+        // Click listener for listview
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final int position_final = position;
 
+                // Pops up an alertbox for user to confirm deletion of entry
                 new AlertDialog.Builder(getContext())
                         .setTitle("Delete entry")
                         .setMessage("Are you sure you want to delete this entry?")
@@ -69,8 +77,11 @@ public class WatchedFragment extends Fragment {
                                 // continue with delete
                                 Cursor cursor = getCursor();
                                 cursor.moveToPosition(position_final);
+                                // Cursor.getString(0) is the ID
+                                // Cursor.getString(1) is first table entry(movie_ID)
+                                // cursor.getString(2) is second table entry(movie name)
                                 Integer deleted = db.watchedDeleteData(cursor.getString(0));
-                                updateViews();
+                                updateViews(); // Refreshes views so listentry gets removed
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -89,26 +100,30 @@ public class WatchedFragment extends Fragment {
         return res;
     }
 
-    public void updateViews(){
+    public void updateViews(){ // Refreshes listview
         res = db.watchedGetAllData();
         ArrayList<String> movies = getAllMovies(res);
         adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_expandable_list_item_1, movies);
         listView.setAdapter(adapter);
     }
 
+    /**
+     * Takes in a cursor object with database data, returns list of ID and names
+     * @param res
+     * @return Arraylist of movienames
+     */
     public ArrayList<String> getAllMovies(Cursor res){
         ArrayList<String> results = new ArrayList<>();
         if(res.getCount() == 0)
             // No data available
             ;
         else {
-            StringBuffer buffer = new StringBuffer();
+            //StringBuffer buffer = new StringBuffer();
             while(res.moveToNext()){
-                buffer.append("Id :" + res.getString(1)+"\n");
-                buffer.append("Name :" + res.getString(2)+"\n");
+                //buffer.append("Id :" + res.getString(1)+"\n");
+                //buffer.append("Name :" + res.getString(2)+"\n");
                 results.add(res.getString(2));
             }
-            //tv.setText(buffer);
         }
         return results;
     }
