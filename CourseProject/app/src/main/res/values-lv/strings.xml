@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SkyNet</string>
+    <string name="browse_title">Pārlūkot</string>
+    <string name="next_json_page">vairāk</string>
+    <string name="remove_watched_button">Noņemt no skatītie</string>
+    <string name="remove_wishlist_button">Noņemt no vēlmju sarakstā</string>
+    <string name="search"> Meklēt</string>
+    <string name="search_title"> Meklēt</string>
+    <string name="watched_button"> Pievienot skatītie</string>
+    <string name="wishlist_button"> Pievienot vēlmju sarakstam</string>
+    <string name="wishlist_title">Vēlmju saraksts</string>
+    <string name="watched_title"> noskatījos</string>
+</resources>

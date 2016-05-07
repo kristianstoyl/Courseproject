@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SkyNet</string>
+    <string name="browse_title">ブラウズ</string>
+    <string name="next_json_page"> もっと</string>
+    <string name="remove_watched_button"> 監視から削除</string>
+    <string name="remove_wishlist_button"> ウィッシュリストから削除</string>
+    <string name="search">サーチ</string>
+    <string name="search_title">サーチ</string>
+    <string name="watched_button"> 監視に追加</string>
+    <string name="watched_title"> 監視</string>
+    <string name="wishlist_button"> ウィッシュリストに追加</string>
+    <string name="wishlist_title">ウィッシュリスト</string>
+</resources>

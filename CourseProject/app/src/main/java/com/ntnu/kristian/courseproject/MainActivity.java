@@ -78,6 +78,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
+        //ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+        ft.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit);
         if (id == R.id.nav_search) { // Search Fragment
             ft.replace(R.id.nav_framelayout, new SearchFragment()).commit();
         } else if (id == R.id.nav_wishlist) {
