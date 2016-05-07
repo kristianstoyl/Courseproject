@@ -29,7 +29,7 @@ public class DetailActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR); // Locks screen to portrait
         setContentView(R.layout.activity_detail);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Browse");
+        toolbar.setTitle(R.string.browse_title);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

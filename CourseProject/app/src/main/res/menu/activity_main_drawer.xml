@@ -5,19 +5,19 @@
         <item
             android:id="@+id/nav_search"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Search" />
+            android:title="@string/search_title" />
         <item
             android:id="@+id/nav_wishlist"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Wishlist" />
+            android:title="@string/wishlist_title" />
         <item
             android:id="@+id/nav_watched"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Watched" />
+            android:title="@string/watched_title" />
         <item
             android:id="@+id/nav_browse"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Browse" />
+            android:title="@string/browse_title" />
 
     </group>
 
